@@ -1,0 +1,767 @@
+{
+	"info": {
+		"_postman_id": "134a1400-b665-4d72-a01f-7a4e9e4c4b9c",
+		"name": "Eton STG Auto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20688839"
+	},
+	"item": [
+		{
+			"name": "Token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"access_token\", jsonData.access_token);\r",
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"access_token is not empty\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData.access_token).to.exist.and.to.not.be.empty;",
+							"});",
+							"",
+							"",
+							"pm.test(\"expires_in is a positive integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.expires_in).to.be.a('number');",
+							"    pm.expect(responseData.expires_in).to.be.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Token type should not be empty\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.token_type).to.exist.and.to.not.be.empty;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "default"
+						},
+						{
+							"key": "client_id",
+							"value": "aad",
+							"type": "default"
+						},
+						{
+							"key": "client_secret",
+							"value": "secret",
+							"type": "default"
+						},
+						{
+							"key": "Scope",
+							"value": "externalapi",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://idu.eton.vn/connect/token/",
+					"protocol": "https",
+					"host": [
+						"idu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"connect",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product Single",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json-patch+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\": \"333444\",\r\n    \"ManufacturerCode\": null,\r\n    \"StorageTypeCode\": \"Batch\", // Batch | Serial\r\n    \"CategoryCode\": \"all\",\r\n    \"Medias\": null,\r\n    \"SKU\": \"25{{$randomProduct}}\",\r\n    \"UnitCode\": \"cai\", // cai | thung | chiec\r\n    \"Details\": null,\r\n    \"Weight\": 12,\r\n    \"Lwh\": \"12x13x14\",\r\n    \"Barcodes\": [\r\n        {\r\n            \"Barcode\": \"{{$randomPassword}}\",\r\n            \"BarcodeType\": \"Other\"\r\n        }\r\n    ],\r\n      \r\n    \"Type\": \"Single\",\r\n    \"ClientSku\": null,\r\n    \"IsGotExpiredDate\": false,\r\n    \"IsLotTracking\": false,\r\n    \"ExpirationType\": null,\r\n    \"DaysBeforeExpLock\": null,\r\n    \"PercentageExpAllowedReceive\": null,\r\n    \"IsBox\": false,\r\n    \"IsAutoLinkUnitToCategory\": false,\r\n    \"Colour\": null,\r\n    \"Size\": 10,\r\n    \"TotalShelfLife\": null,\r\n    \"PackingNote\": null,\r\n    \"Attributes\": [\r\n        {\r\n            \"AttributeId\": 1,\r\n            \"Value\": \"10x10x10\",\r\n            \"DataType\": 7\r\n        },\r\n        {\r\n            \"AttributeId\": 2,\r\n            \"Value\": \"50\",\r\n            \"DataType\": 5\r\n        },\r\n        {\r\n            \"AttributeId\": 1,\r\n            \"Value\": \"1\",\r\n            \"DataType\": 3\r\n        },\r\n        {\r\n            \"AttributeId\": 4,\r\n            \"Value\": \"10x10x10\",\r\n            \"DataType\": 7\r\n        },\r\n        {\r\n            \"AttributeId\": 5,\r\n            \"Value\": \"12\",\r\n            \"DataType\": 5\r\n        }\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "https://exu.eton.vn/api/v0.2/products",
+					"protocol": "https",
+					"host": [
+						"exu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v0.2",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Newest SKU",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"newest_sku\", jsonData.Data[0].SKU);",
+							"console.log(jsonData.Data[0].SKU);",
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Barcode is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.Data).to.be.an('array');",
+							"    responseData.Data.forEach(function (item) {",
+							"        pm.expect(item.Barcodes).to.be.an('array');",
+							"        item.Barcodes.forEach(function (barcode) {",
+							"            pm.expect(barcode.Barcode).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Barcode should not be empty\");",
+							"        });",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://exu.eton.vn/api/v0.2/products?PageIndex=1&RecordsPerPage=10",
+					"protocol": "https",
+					"host": [
+						"exu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v0.2",
+						"products"
+					],
+					"query": [
+						{
+							"key": "PageIndex",
+							"value": "1"
+						},
+						{
+							"key": "RecordsPerPage",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreatePO",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.environment.set(\"po_code\", jsonData.Code);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"setTimeout(() => {}, 1500);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer  {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json-patch+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Code\": \"{{$randomPhoneNumber}}\",\r\n    \"RefCode\": null,\r\n    \"ClientBranch\": \"Lazada\",\r\n    \"Note\": \"string\",\r\n    \"ConditionType\": 1,\r\n    \"PODate\": \"2023-05-24T02:15:00.080Z\",\r\n    \"ArrivalDate\": \"2023-05-24T02:15:00.060Z\",\r\n    \"ShippingDate\": \"2023-05-24T02:15:00.060Z\",\r\n    \"ContactName\": \"test2505\",\r\n    \"ContactPhone\": \"0909090909\",\r\n    \"SourceWarehouseCode\": \"05\", // have to add 0 before number\r\n    \"WarehouseCode\": \"05\",\r\n    \"ParentPOCode\": null,\r\n    \"IncomingPoDetails\": [\r\n        {\r\n            \"SKU\": \"{{newest_sku}}\",\r\n            \"Qty\": 100,\r\n            \"IsPrep\": true\r\n        }\r\n    ]\r\n   // \"SerialNos\": [\r\n   //     {\r\n    //        \"Sku\": \"T195\",\r\n    //        \"ExpNumber\": \"{{$randomPhoneNumberExt}}\"\r\n    //    }\r\n   // ]\r\n}"
+				},
+				"url": {
+					"raw": "https://exu.eton.vn/api/v0.2/purchaseorders/single",
+					"protocol": "https",
+					"host": [
+						"exu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v0.2",
+						"purchaseorders",
+						"single"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get PurchaseOrder by Code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"//pm.environment.set(\"po_code\", jsonData.Code);\r",
+							"\r",
+							"//Verify status of API\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Verify status PO\r",
+							"pm.test(\"Verify status PO\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.Status).to.eql(\"New\");\r",
+							"});\r",
+							"\r",
+							"// Verify SKU of PO\r",
+							"pm.test(\"Verify SKU of PO\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.Details[0].SKU).to.eql(\"T195\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://exu.eton.vn/api/v0.2/purchaseorders/{{po_code}}",
+					"protocol": "https",
+					"host": [
+						"exu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v0.2",
+						"purchaseorders",
+						"{{po_code}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Po Package Opened",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authority",
+						"value": "wou.eton.vn"
+					},
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "accept-language",
+						"value": "en-US,en;q=0.9"
+					},
+					{
+						"key": "content-type",
+						"value": "application/x-www-form-urlencoded; charset=UTF-8"
+					},
+					{
+						"key": "cookie",
+						"value": "_ga_H39M2KDGZ1=deleted; wouetonvn=chunks-4; wouetonvnC1=CfDJ8J3oVemQP5FInv7YySp3fHu1V8miCpvc7y7FmA_CodEkzELO0DgQak68Aeb5lKV8IMivPep8x7cV5VaS1Cl4JBL7SGrYgg0aeN__4lKpOKl7kpXf8UuyrbUMlWS9MYpdqaxNe1b_8SoFh23F1TGW7T-rBgzLZefq7hfZ1vgd1YZD2I0eI-HTRdND3Za_qrU0x_oIo8jNY24uwhFCrf7pRATdzspLUGgwoI-zZrQ_m-5DNgTtDv1j5CIFHbRzUAA_TdA-t-3qWb5wPM_p43uASqXrTPKhQHqxLV4TM57xgsTI6nWaacgtzxzqpwNvz9TQuQoUlWVVJGuRswgeq1RTgdlBHzHUresilHYohxoCaKzrsjvePvOggr9_7ysZAVC8pp8qhe1ncoFNkxPy5SZkLGGt-7uKVQnNxCkfZa0ogqTp61tmmtovqFfuCKO-4BX6Y8saNN_iUZXFAwa6m8HAkREkiYHpr5ENIRZq_Jj__N4AHEVVtbOsWWEKBJOcXG4G3jEMQplWGjyJSY2kNbe8zWH4SXzKFLTO0bWSdRcarOXSfz5gkm5JRVS3Kngw_c9e0x1kIRwlQqCq-kSrDcPwbgVmBHJ1xYBFIwtZkBsLD5IGtEkppl433a0ElaCav0x18zU_iNr5c632QnrcSL3ay3VulyjDkxslZnET3NzIfFJJJYRO-qsBNKgby86qbY4FcFZPSTIfQkpGBINwz9wr2lXe_aSeMzRzCEicF73zSSTZo1uPlM2UiQLKfA3mMEWxU_ES05aMG8gZnKlGW7ut6mmwuLd2T4P8zTPPSjg-2bIhUBU6KtIqFytvfzsOOIyHZV4sTdT6_MIwwgGPIAHH2DeSVdu93vZ9uAdSjCT4ATyVFdUt6XWJBsHMu1hYslZJKsyMWEMNrcrq-Np5K5htGTnjW2LfjAlyCaYLJVuSNCV4Qbay5Mi7Woe356WdMNvLVqxTufnYgN7xEcQKaTDnfUq8DdgxdhFOVXD4YMzqCQ-TGc9YnG_k65FT1rrM1D1ZOnKFXqpixLva0i1fPAns50x_bkRoqMODcUWTJgXC3ahqAlBoLLouir3pl69aW7IPsTU-8XRhIt31c8WzUB4uW8Wa74a2mtqn9TKLNIpVYiERljt5h2ztKpKqEYRsieQ3x8EK9N_tMBNzmOQFpXbNAcD0bBOgALTDGdD-tgu0pBGqusHfcotJGsHVHfKUM-r3cYP-KMw5-hp0Rj2tvxW_xmsUp0E67HIYiUP-lZr2wJ1mDG97MxH5lYlZOa08OMr-weAzv1c_Gi5kuWRTLJGJsJPOKYKjT9JY-UFn0O-vVoBMiJ4JwhdsaIJA3Xjp0R-Hd_Yl865I_VLbAbcLcrkirrjBauSx6rAtWIK6-fGc-QmpZ2oSXO0n8X5FBHmbQHA2prld7MhJ6sFzllZ0vTt8zfDNr9RcSj8GOjDowhRJrTVPnQFEu_7otWaybrm4WteBbvFtkm3l1uTl5JX7UP2UYEu8fF8R7t1F5WVws82x1rfK_d9pROnXiPwKqw-pJ1varaymMwVgSusS3Zy37hqk2YmAYnWC597mx33wRTkoAWN0ZFb1n5x4QHRjDg0I6jEmDMGJDZcXk5DjrHy_E13FuBetEfa_aCoNKqa9DRKWQjzmEd__d66Ujyg7kJA-DD2PBlvUGb6G3Br3x9MJhfcQscg_m6WVm3sfBFYI54MD0E3Br1nPXdBrYe8LS6FMkEHtPdJbhIjUbx-rN64wKcHQLWJYOnCZFJemSHz6o0ld1YJ6uklYvwAugibWolSw-89MEeYARG5Aqs6GIzPCFloN3nKqQk-AqUFEz-n4O2_4tZNEVcQBpsxPnfOG1OdSGECqdL6dGBgHdXnm8WkYWyKsjxwPht0mZ6vqqukvWjhcYIHszB9tOJNhNd5_DNgaSONAXmoQhC0-LdKL3EgK_wl0VleUDZiovOX6wtXBffivu5q5QJNbKjbSCbmAJv1urr3t8xU5404-2z_YYauJ4s0Coc2lNmD3s-jf7lGRe2XeubcjsSxeLbqwVtD17QtVwDt2H427o4aRxnp0bzzvTYSPzQEE3iCStLRlSDMHTjcXadL2nU8f69SfENOBBftFaJU0cSPLCDNTph0uMEC9M4QIbn9iqvrvXg1kzTHX3KAjI6BVDvbTy29gD-YBHatj5e-XyKjy_xj5NCbTPQxjYP5j9kwHYGzcJ4MtlwwlPkb47SZ5c2hD_nkFjw-nioJhpPerCIVRvKPdRu1c7FScHg2l9Q6klKb3kTZ8PvgXuybud-GCosBAbM2f3HGpcbiTj2LRp2KwN6jRUpdYLz7UaIUsIm5vVL8W90N5e93H4ueE-0yIDE1Sblj7BseswLTeA3I9D97f0OwNrhCrmc2j5siTlNOzk_VUTAjGAHyvQjx-4B7WfHRy0f0Umc_rUj2d_54PHyS9J5fbkbX-MG7YJhauujyMmRU9RWvhQnssSeqFBG2Y-Gw8hp9AnubBan42SIUzoxRNvV3bqW7eorjAg_MfKBwkdo_XJNZAWWMDzncdlnMinwj4gJVwr2Jb60y_qIoc0wIXl5mZK8plY67T8sNJodMb17NkKzdwIL_2rynMRVwkx5ALvWtCD1wc2YnMjhWro5xB5qAds9v2lxF8Gf3h2aJ3nu3vij_ldpmq61Qbxf1K4iLJ9djPf81XMz64ICutYqbbpTazEj-pRtP06WdkUeJ2KoMI0QBJmJ-xmS5lT00DTAnNeQBXe60__NcN1uWrCZvQ-EWJg4w5Sz8m6Yspx7fL1qaxaAYPDypkGKv4NYixjb7IayQji_NMB3rw3IP4kWw7U_AZdziXqJ6CKPQEOLF1yBxxBCJRQfHO-2n3FgXoNAD9kU_GsOUdugG5NHgESYBYl5lxBWTU-LoGrSN_7NscMzL6GVi_L9xhX-cJmWppvsAkR2XHRstMCekskZ6zu-1Nc8M2CVvBSe2tFflYFUrLcqxlko5unu6dQs0B9gZ47nz-sVnbZ8CXUwtC-960FAs0pE9Z_kwht_3lcNvJbA7dZnf_-GnPeX3yjkMSXjq6voVKws-Ct-HLso93KmPIMm168VLnKQ4cFPoboGIsmmEcRfYuoSQSOklRXPBf1PPCXZ5zAWVKFWST9aIrFVr9X3I7cOjkrdymLHgNHTBhnUBDF4O5LP42oqvSWkEMVzYhwm6OYfIGuImzSKorNRWc7sIAhisvpyaObgtvcG4D3fCr6_aHiFsfsRR3vLvwCA7SjEASLtzBYEjrzCRTdNc1jOKlUzBnf7dLAumT0aB1HEj99lmjZ8Q4jlbBeXXrIWLcaQLI4kIDSuB7c0wdARSxqrXujzx9eboljkphgorownMMIL18m3UasXiUpUPzWPmMEtYi1WxliCF5foBXTJXE9WAw4k-YrHmtYkvhQ0shvYurCVuCkGjPNMIhBG8mQTeSKyx0JHYRXYdAgpc3OtRwnGf09-RbSU8YNa1AXerjKhv_kGlPDGphKieqpoR4Mnlj06NXZ7I5AOm4aW2YzIFkE7O0Rz0RYskhkGYHkSCQHsKKLiw47U72oo8u8goCKwRJ8JV9dhyo7yvCjF1WKq5V0phGGYOadZu0tO-FQhmIB05aDVVtFlKZ7zWHwbxW1NL9_U3gIr2G1ymFiV-ERHmdXyz1c8lh6c4pOFzasKJ_VzSVpGatS2Md0PwCZZtG6TCTagftZWgL1Njx6jZ8F-N4h0rjZZGrODbV_x685bNVzsGFtSWh0vZhSxTDpqyNMP61XCzq0Bh32S0VhVU642csMmNei8SKV9J0-vCZu7Da8wASvZYSge-ROpm8p0hDR8y7a2WznzazO2ELdcN0oDaMhxJW85IMM5DhBQCGReKaYAQkmL3MhYx-hQo18ympCa1AP0gz0om38wn4zICLm7C2gIz25wYb-8vqs92mkxSJo3u43uKxpwG_ccE_hSx7F8K6WxcClvckalCa4M3GFeAfEeHmJ4YDwHRlP; wouetonvnC2=NhasXPHwyWqaCOPGMRPvG5odwe-0_JTwmkSDlFUFw43KNrlzpaobFmYjA3fbFs9Mr3ahSGuZ6pXAhdHdy0dlZ3HApqftLC-gy5ZpIQz6nHBOEVfF0KOTrM7zFB7U3uwPxBjmCQhd7O7E0p2ArY3_x5GLgnVsyTRUPJCsiPd5xa5qPMKBDfD6T29gEJSPE7Imq0KCfQVnF4_UxnIGsjEcCTIo9NVsEStw8EkBm1k-5iPGfTlNlt4aWPlFXfMEbGVpdFCyJUyuxxKXvrmb33u1VKGRkmxs3iWPd3jotDgVZYPuP_ImckdpBWUL5L3vHloVhuul8AgMMi3CvtW7yFzkXSETSGFirLQy5SwJIN0UKmWmgrdAVBETiP0gGOk7XQvvoPij6wnj6DGx-Hjpc5P4aPdCEEZcoaZ_413Nqjs4V-YGo2Hc_QHngaX86wzAydUtkrTckQo7ZiIvtM8BUxHswLDPbzQVlGcPfb6KwbJHqgEhU0JJo3-W9Vl0J_DGwlCLjP_f6kXtkCQ6x77OS2HNwkmbGxxcEXgFvZWOG_PkiL_xoxKiHLHtfICemEw6eptOUVTF7-C4OuXnofeUMMlBFyo9fBm9lpKWpvmJyqR6CLCFrPuAAqlxWiT5WuEn9Mpl0iagEM9HyQZIBVaCqmeQTtde3aPockpZDXUb-l4PsQV92IahYsJtGgimYNN2aap_uhrVp6xc9yEQMpFMH7tPr8spodvBMquvWGVLd7_3uxwfz5uqyY7_o2TNFoRTjnCu6t489miOXglz4P8Ev75mj1n_OHH4lH0E-8ZL40DG9BENSuFMtVrBepWNVzpLBF--QWfyF6Ay0lhfub12kiJPyxxxLALBs2s6-QRYWjBNmazbPZ6Q-AVna-rCM6MSN4uC9Ml0M5hwe0fcJ39KlFeCsvaOPMucXI_5ys84sKJdLkRybnxdu7cWigF8PIPO3CZkJvEJ3WklEJusxKAkjDpyA0IL_Wa3OzFdkDNCCxjtALuXzBFmehgkd0J3k38oHgwhIDdiGvIqWXw14_z6gePrFxowOhkZgNTd3FcdfOZeYvDnNrhidwI_AtuqQvmz_OlYPrcjHGtdXf0rAU5UY195GX7zh1o69joGiHLLzdQleQAT2FCeNU34N29-Gf0zXbSSTGckXhUF3pcMZ_FlznS089PAkjCCp5vcStuXRxMTMtkyzKwvjzwWGDn9GuIHHUjMzNCjFeUCGUvdt4vMUJhOGPoqmaJHAigaulvan43aq4LY7zIGfQTybxPY-kxMkslXzDGpHyEuIGQDPjzuW_vVVDPy1RQG53cDKCpFyyaIAqAvIKA84XHUg9gtHcsH_OkpLk1EIHrnHzGMMBqj8kOv-FwCbnpIPDYtEtm1BWFmbUnQICVxNhD51-hq-MhMYKXhpV0vjNUe3bdKrNCZ52OpruI3TWsMQFNKZpI0FWhUYEU9l68QEJjrSjhtpKqSeG4-lyI-1vXyR45BnNUdwpJLWc_9BUm_r86jTBzOQrRQGiBeEI_YWflEI0YtNv1BWtNhiqnGjzoAdvQExDJHC-Rm80aaC1QQB3zgyvk7M4iEeWtVaC6rFBNDV4xGbpRwwf7W6THz7dRFqSguD6ASQI-nFZIaGfredO0j7lL4k_V9gMzT9LOG_RMlHJpUBdk_6_tRFZVaF9qaEcfir_AgfV1VW72dEgiQXDsQNjeL9XmG2zWTsK4Lx1DWsI2V7OTElt4rpdB9TtPCI3O6X4NvGOTa7Lf0Gb8ulmfXhMcXdINEK-rekmK4KPlodj3T6jICz1vApLgum99Xl6NjD_8zRr0rQySJ43mZEBT9UBzXIZwzw9uvt-UIlWmCb2EXmxaB0OOfOVoLGcc11WdkFswvDSd_s4XNy-dQVaKfcLji4_vSTwV5kXUSysFlY-IDQaLuPg95hSr6lZgRgpabGr_DURK4ZIEmHLobry8-ZtNHRMupzibeE3qxlwlYzLAhuYV0GEjg-6Yvu-Sw-zDCk4pBD4DVQFDpwpzacEnWdmuaoUypMu3IoGcw4DDQcJ6L-SM6AGTHipkWcGZ2Hz2mRvYAdS1DXpjWxBqaNguqSewArhGJ5PMY2qMi0rkxD6LcI_VQHyJh1Lq0xApdmDy6UGZ6Jj1FrAT-xwJaNdn3NQIvxAUPbrkc_CCLZH6rce_03f9NZIdGU2yBpl87QLCtsE0KOWCFP3YLtwCi5gAJpzP6CdOoOEsLTY5xtPtOrrZPjfoEzbRSs6kAH7TCam7dXCKi2bLwsB1pmSw09sNBaZ3FWoi38BOvELvHWTdP4i4oPcduubYzAzIwwh22ASxqqXWdsTkK_J9jt_vQGj-L1a9o370KeL8evVxbX6mtty1vMXlQ0o3gPZkJduoundBRUpg5zQjP8_-GLeZ6z4HKCVcZ_xYdnz6R7rhCA0iOj3itZ5ap6fQ1-XMBKFO3MCg9M1ZltvhSVdYCrImDUeSQniP7SuuWIqlInO1-kSyPJBV436cMPQqMzwnB7PH9MP2Qd0fheZHDdOWcyFfmL2t27l-SYpG_XQy3JU88exfF5kEiK9k2iztKS_qJ6nkkWMWQKF5lW8-8aTGCpDYkmL7_IIbsGmOr6oqBz53XvfRrWb2sDolzK9AsuF9ajG1AU2NY2Ht8gHy0P2Ne-ui2M-ASvc-O9jwVB3MAK7Pfj9-IfD80CLd1WAykjGYq03X_B6MbikeJgFjCOSGUftxJ3FA4tAaLdZIARlVgW7UZed_jxLNszwZzJfeSWfYHoOqpsrhZb2ZEbOi97T6M0KHk48oMzLXknk2BdETxsZSA9F4BApNneZeMBgih5UwIUW3YgUl5vt2kg4NY5Bya4Tj7jBbkANj-dzjji1pi_jVYIl8NUS7jA-PYkaUpbNokDWM4_14Vgf33aMVxKOIPCs5G2cSrHTqQ6Cb_INR0ILV95rmfnlDziGO7nekWSgzn36-ZZueNDHfL2MevBdSUSIt-tq0jwlc-3_n0IPrxHv0cQCukv9rl5x1lgAHhRtlwZ1hATBsOigyAt-sxAB30EbUr_TNJ8GTo4dsaS8y3TtR8Gie9kYfuH-x4WfJxlVizAHmfG8-FppsUC9F3GvUQEJrTVKu93FthvOCQkdmqTJKlnBvOzM2aaRrqrc-nmZxRx-SQeWBHgAXJc4g4EBcLuw5gY2faSsed1utwegltnJs_agQimVB7YtLmERIC-5xRiOivnEfBpmOsrPynUDXj-KtbawhuOlp_2iTsFP5rbArefYFEIKXckb2wXiOECALTk-Th4ivwfMRQeo7nyRt19R_Iwb81AKpgF8dMx7tjASEIHfhEAjMISPI1na9uQ7MRDRjD3IucOPZcc-U5nlmvpd3HJX10cLHTSVszJho1Br5VceDSBLmBrCm_wUfozzV8a-V6LmnxPx3rQEKuAoBidhC6-M35_Xw_HwtweDYjRl-LCibCii3yUYRJm8ODayJ18QFUAS3vN0fsN3jyOc3H2dYy2MjpIK-x1KxpakiyvsC-BQE2Izg-H-aL6iUxiwSEDQil0jeIb9Kz7AzeqwAnSlvY98xOYpzn_LB38PH19FhIeZXEuplcSm_k-ID9TQlcvXjhY7nPHftoI4UzopZ6CQLuX71NVsNMRTCyb2Mh5k1wI8C29hhVs07rCNYTBGPMS1TpZ3FvE4MiFU_VY6pv74Z_Ici_fGSyEPy4T4dreD2c4g2Jk2cddTXTiHxymIGgxo6Kcj_qufO_7ZfnGuTk7SIxUDeVJZ1gr8dt5E0FB1Pms2cMsoFLIxlNEJz0-qHIebkcL8LvsAEbIb2O_C0gCMHw7So1SREIJM7Cjqz93UFs-RDvDxSdU--GcUiA0b0sBh0gB1cw73GG8CU1JIVF3POisBsfZyexRdpxBw_Q0W0jT7tdDPCxhzyiLf3SPEmNBB_5-bVFngQlFoDoZrFlmj9ZL-0aJvaBL8z8dK492i3HDddQO5oQBv6QPBAvTxBX-n4D2v7dW_V7i; wouetonvnC3=HluO-gsOuaE7GoeC6mvPcMmboXmhfoI1DSIjhL-W9x4UpmP92PC_xTgQCxIsRgqMVezJrc2NLBD6k_cqgvze7q9UMGvjIe24Dy5Ff2xCF7RBNP-A1lyyAI92EyT6kT30Vz1jH-b6StNtu7EI4ZmOytikbOLBMy6ObPCJuyHQbk4Ohi-mHYT-hBltfx_pggi94UJE32oC5pRrh9xpBHrx0vrPw-afUmMI0_Og8hDIeOaKoA3GU-eKIL-CZacmXeIzVyahV2Dt9J3gIOiM49xRvKrNT-ywAXRht15kpMEDMzBaylbABMLEGUdnoFf2mdfDno6swnvQfiLxFVdcKlSaRnFgVMChSGff4_eMvdi8J81SfbLVC2ZgtyjYDDP5RBdlAUmytH75WcpAyeMQD42xjxgbQLQedKOcv182UwrzewBNTPZxPMqtCDXf-nCMcQjel7YHydeJLSMRGdL92PBo44vploak2rb_Bv0KWQ-na9Lu3mBHxQQmuv3FlJm3FAz-ermiM_OP3fnfqIHhbGQahSbEQQR1ZVDgrACXOug6ZLnXqGjYNr30CJTCpm-H-_Jq_v9s2QzKYsU6gtwUi7g6jnwrAHuSeAH1SRxGHGr4_DrxCS8rAxGlCtXH2ktmWl5kuZ6ED6dv9LMg2kHaA86gWcAW6RjGp0udk0r3DdE4vo1VjHx3zlDgfkhaFhAPZacVjTu4TkuAkfrPKkp6NaWH94MOFlzeS9Xse5HNkifqgA-OXsL1-Uh61CZnaaxREfnC4Q2Fxmdbv42KrXt163W9vMW7jfNYXfz54KdKyFTfghRlG8aJTjp9Njko11b4IFWiyAXQo7IVpEZtvZKDw2u0i7eDRD6qGTxCOrX-FsJqgZijcxDWLdMAoUGzPHRTsAmSrRAiDhJ1eWK1o9UcydpiQjysUVb3cWMriQERH3LkDkW0u1da-LVvqMUzRlLG4rTzlb2q5UPZs30ABprMFUw8V8c4AbW6BK5B51Xm8YvcFuqrFNxlmaiJKw_y2s3ymY30ra3Nnyi31PVxQpVoRAv-RoyIdYyVFDSYQhqY9Ua_1N-pXJ7DylxJGQq4xmovaiTE35uT68V45aIeCmM6PIwk-4axyhfx_KrirnVChfqxzfRevtJrj_0VAXmc2DIp94twxGnIE3MCO4OTnqgR6WTi74ngi3u5kKk71wlKZbPHODFXWF8oWaK9dYqCh3GZI_ndwcmq06v7t0uSQrlzT05Mgvy-j0vzRhWnJgdjMFXZrkoe6vy2tLqgLsWip5F5tOKy7Qztc4UhUcoyrAc7jPiy9rfXv1GeMyetLf2g-570gDzC-rMkSWrCvGVRVdK01QWDO05UzETS15vPisxesfxmScwXyO2oXcZM0Z9n7kWid3syhn2h9BBOl34gkdBr8C3ezQLZwxKFMIqmiHY-lSiYvCvrReM-odE61OBk8CRSglLLQdPkJT2qhg5UKNCfhFnUzpycU8mx0Itw6ywIXDwVTWv5nESlMtx1gkTSYQcm1cQcuz6KRQdcpM-CxaQZqW8GAfazkqV7tTBlFYolB8t6kDamQmpDV1_EYQs_f0fTQKkaiTEkijtb4BR8wOcSixVVhlPruojV5ALu3FZuSE4Enze8AMLvi3w46bmg085hdS8NGFxYZyC-4MZSkhc-GyyjnktyW1z6AOXSfesuTFsPyoLVWlWmX4zFbXJMcF9WUL5aNoWRpCkQ4s43MIlniuFDLmD2fZoWP3HNicew2_EIxmkRDchGIp8UUZP1ANpBLmmy1hpMMbUABRqfnJZUyjSAqDBKStJxpbB3r6rpbKEPg-E1baOb-CtrozygmK33z2LQJULybq1tkXpgwsMXKeMd62nQc1xvTckVv6JirugU6Zp4IMBaBig_SB37H64w-2FF4qLhOSmOQ9vBwoq9zHSCeyBBlivxAga0nQEeUIyPlns4TevxpLg30SMUAe1tAGs9CbJP7ZjAKFv4QkDXtGsur3w9Aju8J5wRhdPUP02pPWL4uIaWf7Vgf8VhGNvCEQsFaATrpbFOHN-Rvpbj3J83XG5uzUbPMrG2PVEFmkxsuz41kitOj3XNTgTzusUq3tYJa8ktgHy037K6cC9m7hFfzahSw0ZxjNCOnx4NQlNwzoiPNsTpgs0vthpSxWkQ8qobKzgs42gKvVafIk9QfPwqb3bCPzlWww6-Wb5vqFzeg83Vx6HW9mP-CvX3KEafGNocZWFKkD_laY9ypk4dK7AqbFGo6vWIRJafZ0cID1uUASVm38Lc94mlIiajUgPAxWldix-3kr8qWAEF6HDpk7EacWRTNTlDeoWrDG8PxT-7xks5x3wCfgVNEPten36Hjm-LdjpyMZTthLYZf-wN6x2nwO5qLsq2BmRL89CL8ukcMojOJLJF2wuHTG5x2rcje3wjyv0ss0cR6yeR96gB4x-2bI1rlkXggoeO2jVZlyE7Yll891jZzlQnuGGtuRTsy0KCAmfrlCT0GGUxVOd8hig1GAVD9cH7PNcrpcDu6hfQTUK2IIe6-w6alfElAdjJNwmWs8oearacHLCISxyClYLlgD2219S0p58Qfx81EeiCTtbhvHRS-vMd3DEZLXcGECAmITrmL386QeK2SOA_5HtyNyzWv3a7cRMt5UqRfq7DWnelnzpDFebHuoA3yffoG2Xg6KonX_XVNxCHhQ6k7fTLRXBjva6zhnUBprnzyQuZkJGrwJHwImd1vNyxamLqUxCi37nCk7YVJYLZev4tLfjF52l1v3-KwJpt4I5uIL_stqZue815CDq3_j5ImLbNLJedIJX5V_1NN3nCOp4pifjPSsttSkcA2axnDhreZqyUfhoK9ZKS8wCI3uh5wydneGYNO1jysyRV-yc7x0Ub0mCxrHTcr0MdY0T0297swR0-Mx5AH_oD7yAYwhJmWjVyvwMpyUFh1UtYAGv_7gELRYmyacyAkdONoND4po1Q1a0qgAzOaI4Ke10wUPG0qLiOGNbxFDGcJwI0p8twBGB-QH3pDJ_G_oi72L9qvFd90QVW_8ca7-tgLNx1zGyNEB2LwkaQd3dIhcZPbiXgcURhfJFKStpRToG84I6vhNSSEKemgEHlqXbTj3TddpRdAwSB8sJ9WkGffxomnqbwGH992krv4jRZ7H84CcAy04KuwdTKsBsoaID7UiTh-2KYEPK0WGIy3Qq4Chwod5pYwhFd1_08Vu9f5z80ejBP8qru8aMt9SySomQPoSJkOKVpT0PLv47nVk7gepzwzmrFF3slb74cqdtFpBWoT2J17UVR3FhDRzZGfUYrlTdQSAmsCeopIXHyMY0GmkP7RAUQZk0UqhzwNTA3XMIIHz1WJNgt-i_JMx8g1EQJ0EHZ14wRu8-NRB1igsg5xOxe7lU_zoWKsqqYFrtE4btqVXstGorll9z14kKhczHUql53kFwaiSqIj4Nymmi55-gWPAvMRXXPxkDshAL9b9LJUbo-W2l0rSDlrMB62gnCE0PLC0m2xiFyCcCpKhCAgRgs7mRh70bVsitiqRHtdw3B06otKhzuU--F3E09YwrRjMlGzjxKIgtxnZrVQfiTxUyGvxyxkKfNPciuuVWTcBcFU6B4hLyEvcCwlYLVsNn46GVcYEGYLkNZ_4es-Ug_01CIIoGnIhB1oyrYW7Pc5kNPwhOKSiIeatiEoMbgCUoZKDDCPvzJvYYVn9y3r_j-Te7q34UTtLbSsRnE4-V3w1Fgsr17p7FUDUFqvI10JAPeAuAC1_WbV_UDvTrDk1_XkHTMNyT8XmESRoOEkCXX56-1mouM2mxPHO0mfB26NTb5rJVcDIIs2rNSW5ty59jnhtzcJa1QxNQX3dAa7X1mgayRQUZPNWsTjokoQmREtNDhMIA--ttP8toJKr0N7-peAjES8a3QEQsJRzku2RdzXcxOMLkqZHgk68LqdEt3o9WBGBvVt2LMl_F0SLwbLWe7rGee80jCscoBmCNqcZ8pernlxYUrjh4ld; wouetonvnC4=rRBvundKloKqM0E_i4e1GYFdpEm35Ax-ENmiUh34TwR-kjKKgkdHBdVt4varhlusNLbIByC35wxUJhKbPfuvfzqoT7ESorlwL7LTnp05aLTPNB7V8tB4A-pBAn_WPU2PG07sWTczqhxVsZM3ORT17RpAcoTEp_0FZu1h6fa_14JwhboX65YKzbGtAuiSAd1EI6iNHAx1flA0NzZ8YX7UuMrDM8Y4A-Va6cain_SfwmKAQhUXx_MnjpF_swRlGqYIfRttNA-OFK4CCvHYNC4oXavrpjtE87l4P8bibwJZogMzho-d8uFI-DTi90LkojjwLOzKQs-42FBeMGe3c-BtEQ4G-bu_mcGKj2xhiYDcj9Bc9zYOccvFW1cblu6WWGzsNYZfHzu_f9xc12mlAME0o3ooluD9_vkC9CXJftPy1_bwzBZFWazPWtXdJThzoFvPR-ByQoGi0n5JwM7KBKqyWatfL38F5gZ9T0nz_x1i2BgK12loZRi3PHVDu-ME7BTGqxq1YocsJXUozBPKTxMxxNTObCdanRs1OTlSUmRH470gkfuXNdfyPPlNc19oCNlHh9sGP0a-NGb9n9613SvibyfTYJLI9p9wdnPDqHQHLCe6LatJ_76Jz2ovOPs36TgNnQeEPmcivCkzuOE4G_0wYnvfP_V-hQmpx1ERA0n8827kATw23PmGOGLHBv8mH1u_RwokJ_4ai2Rk1jQHr9IPrawNMRDkr2B2EgG0ksL0ya4Di9XshG8S3bh8Q4MhATYXCGkrC4vg8KD1-Pdb8wIXrWl5TfayxuIxVDo9v1O_icwwAE_RkfgMiXAqHjZ_RF20OzzuJUxp3Ac_veT5RLA0xEDOP5-X8xl8eL3wvET215PC280q6INHdXu3OOWhJL2552JlfbUeMcaMzXqpnPpxW_XrKHAtMEXuN8QEeeSXYwcj8167qto5DYsIzvRpmnve02itlcFxdX4OfA3a9FnSP9lqbscpPKHQlvXverVaIyA1ulWLA0W85QC0fJbSZlzPL-6Z34Jue-I1xesLJuae0DmyKuSJM2oMrv6FkQFgop57G3A5MiIWMBrB32rSb81L6-OUtMhsbhtZUQWZUbik4RTBdZfqchE4BTdM5xS9SrnBTKG_ec1KbMAdcPazMPw2n53IkaDUUmTu1VgM4wJ8fRb9VT0ZQNCCvDHgZOUAleOcLQuJjNyUObsEU5mrW7dt-Qhmv-WAIextfkFyAWW4ZJY0nMKwanbvN8X7zFDaVzRC-RAO4snuZcfb92Tbj5hkLi-ne7kHPUCTY-MaVBGU2AmWamWuNAvSmvbfMfj8aWWldHJK9c5CG0Sp3gDbEANGuoqay9aHsbc9-2m_s0dvKQ6uxcD6P_feWOdhd3-Bc5z5HPiQxujSspC0CdwjyPeZONqqPt1TsqAJRqS8-4Egg9a-hGitqGlXRi5uVKwLMaY_pzgUTYuW6dRK4LZcNq_EnhNaR8L-1WhcK0Wia_iZ0qXW1v6xZXuvD3XV-6kxs7bZMD-UTN3IRlieo_GQ-yXzDWSOOtQeZWz2QwCHwz7X153SQaaTtEnKNNXqlq4W1xVhyG0NfkvdNaBM3e6HRVSpQlVAThMk3OaOmDtkVF2b_ULvwQlCZo-uiWTx6ov0NM6ZocyIHZieS7PDMcNkzwn5hCvU0s34tYNRCsZjJbuOQuBP4xsdfNrrZ5j6eZFoBbyDHO1_oFOFE6zSEdB0KIRTCOcg-b0uDcN-gL4h5DKs9IQf-H0JbBkxibZSZCl5YmCDmH7Q60SbhWmlHOQNdVF7c8yEIkjuhIPzAWJspsmJ1SqHySlB5tO5kEn7ZK5ziwcTZjQeHfk_ZGZKpYKu7G0Zf6_brosC6M7WkSZrnLmI2sjYHzSoV3Uwg5PML_beLlCFuz-ZoBfL1AoLhjAdoyOt94nvYUZhyOCLd-0kGAAf8E7eLCOvBu5ByYUtXUiRnQRg6Wgfnyq-FxNR_pYrBFvXsbjOYiIotQeFPfBksVxedUFzRRAUQvnZMgJhzPkraXkRyGMa3hEW04SHQVUXKVENQw34ZwpKWZhpvxX4crLvxwxcazjJyx9SE_5XlYa7WssMa40HcXVrf2p0X85IfJnbxHKugmiFxvqocUUP0NQYNQH4_qpaAuy4ODnVAQkA36mHAPMOO88vwSll2nPo_Yna1Wm4EqHuvu8aYBKbFAtoXSCPBhqm67NLU5EZ35GTo7GTxej_IZchpfCan7ZaRU-Qxet7MAi32rllI3HAakcvzyrQ5MJ7uJFYBoksuQ0XiNOlf-fvzm1AbDvm7IDFA; _gid=GA1.2.628557347.1685497575; _ga_H39M2KDGZ1=GS1.1.1685497574.4.1.1685497585.0.0.0; _ga=GA1.1.398823980.1685078728"
+					},
+					{
+						"key": "origin",
+						"value": "https://wou.eton.vn"
+					},
+					{
+						"key": "referer",
+						"value": "https://wou.eton.vn/TaskReceive/ReceiveWithPrep"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Google Chrome\";v=\"113\", \"Chromium\";v=\"113\", \"Not-A.Brand\";v=\"24\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "empty"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "cors"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "same-origin"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "x-requested-with",
+						"value": "XMLHttpRequest"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "PackageNoOld=&PackageNo={{po_code}}&ForTaskType=1",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://wou.eton.vn/PurchaseOrder/UpdatePoPackageOpened",
+					"protocol": "https",
+					"host": [
+						"wou",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"PurchaseOrder",
+						"UpdatePoPackageOpened"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PO | Check PO Status Task Receive",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authority",
+						"value": "wou.eton.vn"
+					},
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "accept-language",
+						"value": "en-US,en;q=0.9"
+					},
+					{
+						"key": "content-type",
+						"value": "application/x-www-form-urlencoded; charset=UTF-8"
+					},
+					{
+						"key": "cookie",
+						"value": "_ga_H39M2KDGZ1=deleted; wouetonvn=chunks-4; wouetonvnC1=CfDJ8J3oVemQP5FInv7YySp3fHu1V8miCpvc7y7FmA_CodEkzELO0DgQak68Aeb5lKV8IMivPep8x7cV5VaS1Cl4JBL7SGrYgg0aeN__4lKpOKl7kpXf8UuyrbUMlWS9MYpdqaxNe1b_8SoFh23F1TGW7T-rBgzLZefq7hfZ1vgd1YZD2I0eI-HTRdND3Za_qrU0x_oIo8jNY24uwhFCrf7pRATdzspLUGgwoI-zZrQ_m-5DNgTtDv1j5CIFHbRzUAA_TdA-t-3qWb5wPM_p43uASqXrTPKhQHqxLV4TM57xgsTI6nWaacgtzxzqpwNvz9TQuQoUlWVVJGuRswgeq1RTgdlBHzHUresilHYohxoCaKzrsjvePvOggr9_7ysZAVC8pp8qhe1ncoFNkxPy5SZkLGGt-7uKVQnNxCkfZa0ogqTp61tmmtovqFfuCKO-4BX6Y8saNN_iUZXFAwa6m8HAkREkiYHpr5ENIRZq_Jj__N4AHEVVtbOsWWEKBJOcXG4G3jEMQplWGjyJSY2kNbe8zWH4SXzKFLTO0bWSdRcarOXSfz5gkm5JRVS3Kngw_c9e0x1kIRwlQqCq-kSrDcPwbgVmBHJ1xYBFIwtZkBsLD5IGtEkppl433a0ElaCav0x18zU_iNr5c632QnrcSL3ay3VulyjDkxslZnET3NzIfFJJJYRO-qsBNKgby86qbY4FcFZPSTIfQkpGBINwz9wr2lXe_aSeMzRzCEicF73zSSTZo1uPlM2UiQLKfA3mMEWxU_ES05aMG8gZnKlGW7ut6mmwuLd2T4P8zTPPSjg-2bIhUBU6KtIqFytvfzsOOIyHZV4sTdT6_MIwwgGPIAHH2DeSVdu93vZ9uAdSjCT4ATyVFdUt6XWJBsHMu1hYslZJKsyMWEMNrcrq-Np5K5htGTnjW2LfjAlyCaYLJVuSNCV4Qbay5Mi7Woe356WdMNvLVqxTufnYgN7xEcQKaTDnfUq8DdgxdhFOVXD4YMzqCQ-TGc9YnG_k65FT1rrM1D1ZOnKFXqpixLva0i1fPAns50x_bkRoqMODcUWTJgXC3ahqAlBoLLouir3pl69aW7IPsTU-8XRhIt31c8WzUB4uW8Wa74a2mtqn9TKLNIpVYiERljt5h2ztKpKqEYRsieQ3x8EK9N_tMBNzmOQFpXbNAcD0bBOgALTDGdD-tgu0pBGqusHfcotJGsHVHfKUM-r3cYP-KMw5-hp0Rj2tvxW_xmsUp0E67HIYiUP-lZr2wJ1mDG97MxH5lYlZOa08OMr-weAzv1c_Gi5kuWRTLJGJsJPOKYKjT9JY-UFn0O-vVoBMiJ4JwhdsaIJA3Xjp0R-Hd_Yl865I_VLbAbcLcrkirrjBauSx6rAtWIK6-fGc-QmpZ2oSXO0n8X5FBHmbQHA2prld7MhJ6sFzllZ0vTt8zfDNr9RcSj8GOjDowhRJrTVPnQFEu_7otWaybrm4WteBbvFtkm3l1uTl5JX7UP2UYEu8fF8R7t1F5WVws82x1rfK_d9pROnXiPwKqw-pJ1varaymMwVgSusS3Zy37hqk2YmAYnWC597mx33wRTkoAWN0ZFb1n5x4QHRjDg0I6jEmDMGJDZcXk5DjrHy_E13FuBetEfa_aCoNKqa9DRKWQjzmEd__d66Ujyg7kJA-DD2PBlvUGb6G3Br3x9MJhfcQscg_m6WVm3sfBFYI54MD0E3Br1nPXdBrYe8LS6FMkEHtPdJbhIjUbx-rN64wKcHQLWJYOnCZFJemSHz6o0ld1YJ6uklYvwAugibWolSw-89MEeYARG5Aqs6GIzPCFloN3nKqQk-AqUFEz-n4O2_4tZNEVcQBpsxPnfOG1OdSGECqdL6dGBgHdXnm8WkYWyKsjxwPht0mZ6vqqukvWjhcYIHszB9tOJNhNd5_DNgaSONAXmoQhC0-LdKL3EgK_wl0VleUDZiovOX6wtXBffivu5q5QJNbKjbSCbmAJv1urr3t8xU5404-2z_YYauJ4s0Coc2lNmD3s-jf7lGRe2XeubcjsSxeLbqwVtD17QtVwDt2H427o4aRxnp0bzzvTYSPzQEE3iCStLRlSDMHTjcXadL2nU8f69SfENOBBftFaJU0cSPLCDNTph0uMEC9M4QIbn9iqvrvXg1kzTHX3KAjI6BVDvbTy29gD-YBHatj5e-XyKjy_xj5NCbTPQxjYP5j9kwHYGzcJ4MtlwwlPkb47SZ5c2hD_nkFjw-nioJhpPerCIVRvKPdRu1c7FScHg2l9Q6klKb3kTZ8PvgXuybud-GCosBAbM2f3HGpcbiTj2LRp2KwN6jRUpdYLz7UaIUsIm5vVL8W90N5e93H4ueE-0yIDE1Sblj7BseswLTeA3I9D97f0OwNrhCrmc2j5siTlNOzk_VUTAjGAHyvQjx-4B7WfHRy0f0Umc_rUj2d_54PHyS9J5fbkbX-MG7YJhauujyMmRU9RWvhQnssSeqFBG2Y-Gw8hp9AnubBan42SIUzoxRNvV3bqW7eorjAg_MfKBwkdo_XJNZAWWMDzncdlnMinwj4gJVwr2Jb60y_qIoc0wIXl5mZK8plY67T8sNJodMb17NkKzdwIL_2rynMRVwkx5ALvWtCD1wc2YnMjhWro5xB5qAds9v2lxF8Gf3h2aJ3nu3vij_ldpmq61Qbxf1K4iLJ9djPf81XMz64ICutYqbbpTazEj-pRtP06WdkUeJ2KoMI0QBJmJ-xmS5lT00DTAnNeQBXe60__NcN1uWrCZvQ-EWJg4w5Sz8m6Yspx7fL1qaxaAYPDypkGKv4NYixjb7IayQji_NMB3rw3IP4kWw7U_AZdziXqJ6CKPQEOLF1yBxxBCJRQfHO-2n3FgXoNAD9kU_GsOUdugG5NHgESYBYl5lxBWTU-LoGrSN_7NscMzL6GVi_L9xhX-cJmWppvsAkR2XHRstMCekskZ6zu-1Nc8M2CVvBSe2tFflYFUrLcqxlko5unu6dQs0B9gZ47nz-sVnbZ8CXUwtC-960FAs0pE9Z_kwht_3lcNvJbA7dZnf_-GnPeX3yjkMSXjq6voVKws-Ct-HLso93KmPIMm168VLnKQ4cFPoboGIsmmEcRfYuoSQSOklRXPBf1PPCXZ5zAWVKFWST9aIrFVr9X3I7cOjkrdymLHgNHTBhnUBDF4O5LP42oqvSWkEMVzYhwm6OYfIGuImzSKorNRWc7sIAhisvpyaObgtvcG4D3fCr6_aHiFsfsRR3vLvwCA7SjEASLtzBYEjrzCRTdNc1jOKlUzBnf7dLAumT0aB1HEj99lmjZ8Q4jlbBeXXrIWLcaQLI4kIDSuB7c0wdARSxqrXujzx9eboljkphgorownMMIL18m3UasXiUpUPzWPmMEtYi1WxliCF5foBXTJXE9WAw4k-YrHmtYkvhQ0shvYurCVuCkGjPNMIhBG8mQTeSKyx0JHYRXYdAgpc3OtRwnGf09-RbSU8YNa1AXerjKhv_kGlPDGphKieqpoR4Mnlj06NXZ7I5AOm4aW2YzIFkE7O0Rz0RYskhkGYHkSCQHsKKLiw47U72oo8u8goCKwRJ8JV9dhyo7yvCjF1WKq5V0phGGYOadZu0tO-FQhmIB05aDVVtFlKZ7zWHwbxW1NL9_U3gIr2G1ymFiV-ERHmdXyz1c8lh6c4pOFzasKJ_VzSVpGatS2Md0PwCZZtG6TCTagftZWgL1Njx6jZ8F-N4h0rjZZGrODbV_x685bNVzsGFtSWh0vZhSxTDpqyNMP61XCzq0Bh32S0VhVU642csMmNei8SKV9J0-vCZu7Da8wASvZYSge-ROpm8p0hDR8y7a2WznzazO2ELdcN0oDaMhxJW85IMM5DhBQCGReKaYAQkmL3MhYx-hQo18ympCa1AP0gz0om38wn4zICLm7C2gIz25wYb-8vqs92mkxSJo3u43uKxpwG_ccE_hSx7F8K6WxcClvckalCa4M3GFeAfEeHmJ4YDwHRlP; wouetonvnC2=NhasXPHwyWqaCOPGMRPvG5odwe-0_JTwmkSDlFUFw43KNrlzpaobFmYjA3fbFs9Mr3ahSGuZ6pXAhdHdy0dlZ3HApqftLC-gy5ZpIQz6nHBOEVfF0KOTrM7zFB7U3uwPxBjmCQhd7O7E0p2ArY3_x5GLgnVsyTRUPJCsiPd5xa5qPMKBDfD6T29gEJSPE7Imq0KCfQVnF4_UxnIGsjEcCTIo9NVsEStw8EkBm1k-5iPGfTlNlt4aWPlFXfMEbGVpdFCyJUyuxxKXvrmb33u1VKGRkmxs3iWPd3jotDgVZYPuP_ImckdpBWUL5L3vHloVhuul8AgMMi3CvtW7yFzkXSETSGFirLQy5SwJIN0UKmWmgrdAVBETiP0gGOk7XQvvoPij6wnj6DGx-Hjpc5P4aPdCEEZcoaZ_413Nqjs4V-YGo2Hc_QHngaX86wzAydUtkrTckQo7ZiIvtM8BUxHswLDPbzQVlGcPfb6KwbJHqgEhU0JJo3-W9Vl0J_DGwlCLjP_f6kXtkCQ6x77OS2HNwkmbGxxcEXgFvZWOG_PkiL_xoxKiHLHtfICemEw6eptOUVTF7-C4OuXnofeUMMlBFyo9fBm9lpKWpvmJyqR6CLCFrPuAAqlxWiT5WuEn9Mpl0iagEM9HyQZIBVaCqmeQTtde3aPockpZDXUb-l4PsQV92IahYsJtGgimYNN2aap_uhrVp6xc9yEQMpFMH7tPr8spodvBMquvWGVLd7_3uxwfz5uqyY7_o2TNFoRTjnCu6t489miOXglz4P8Ev75mj1n_OHH4lH0E-8ZL40DG9BENSuFMtVrBepWNVzpLBF--QWfyF6Ay0lhfub12kiJPyxxxLALBs2s6-QRYWjBNmazbPZ6Q-AVna-rCM6MSN4uC9Ml0M5hwe0fcJ39KlFeCsvaOPMucXI_5ys84sKJdLkRybnxdu7cWigF8PIPO3CZkJvEJ3WklEJusxKAkjDpyA0IL_Wa3OzFdkDNCCxjtALuXzBFmehgkd0J3k38oHgwhIDdiGvIqWXw14_z6gePrFxowOhkZgNTd3FcdfOZeYvDnNrhidwI_AtuqQvmz_OlYPrcjHGtdXf0rAU5UY195GX7zh1o69joGiHLLzdQleQAT2FCeNU34N29-Gf0zXbSSTGckXhUF3pcMZ_FlznS089PAkjCCp5vcStuXRxMTMtkyzKwvjzwWGDn9GuIHHUjMzNCjFeUCGUvdt4vMUJhOGPoqmaJHAigaulvan43aq4LY7zIGfQTybxPY-kxMkslXzDGpHyEuIGQDPjzuW_vVVDPy1RQG53cDKCpFyyaIAqAvIKA84XHUg9gtHcsH_OkpLk1EIHrnHzGMMBqj8kOv-FwCbnpIPDYtEtm1BWFmbUnQICVxNhD51-hq-MhMYKXhpV0vjNUe3bdKrNCZ52OpruI3TWsMQFNKZpI0FWhUYEU9l68QEJjrSjhtpKqSeG4-lyI-1vXyR45BnNUdwpJLWc_9BUm_r86jTBzOQrRQGiBeEI_YWflEI0YtNv1BWtNhiqnGjzoAdvQExDJHC-Rm80aaC1QQB3zgyvk7M4iEeWtVaC6rFBNDV4xGbpRwwf7W6THz7dRFqSguD6ASQI-nFZIaGfredO0j7lL4k_V9gMzT9LOG_RMlHJpUBdk_6_tRFZVaF9qaEcfir_AgfV1VW72dEgiQXDsQNjeL9XmG2zWTsK4Lx1DWsI2V7OTElt4rpdB9TtPCI3O6X4NvGOTa7Lf0Gb8ulmfXhMcXdINEK-rekmK4KPlodj3T6jICz1vApLgum99Xl6NjD_8zRr0rQySJ43mZEBT9UBzXIZwzw9uvt-UIlWmCb2EXmxaB0OOfOVoLGcc11WdkFswvDSd_s4XNy-dQVaKfcLji4_vSTwV5kXUSysFlY-IDQaLuPg95hSr6lZgRgpabGr_DURK4ZIEmHLobry8-ZtNHRMupzibeE3qxlwlYzLAhuYV0GEjg-6Yvu-Sw-zDCk4pBD4DVQFDpwpzacEnWdmuaoUypMu3IoGcw4DDQcJ6L-SM6AGTHipkWcGZ2Hz2mRvYAdS1DXpjWxBqaNguqSewArhGJ5PMY2qMi0rkxD6LcI_VQHyJh1Lq0xApdmDy6UGZ6Jj1FrAT-xwJaNdn3NQIvxAUPbrkc_CCLZH6rce_03f9NZIdGU2yBpl87QLCtsE0KOWCFP3YLtwCi5gAJpzP6CdOoOEsLTY5xtPtOrrZPjfoEzbRSs6kAH7TCam7dXCKi2bLwsB1pmSw09sNBaZ3FWoi38BOvELvHWTdP4i4oPcduubYzAzIwwh22ASxqqXWdsTkK_J9jt_vQGj-L1a9o370KeL8evVxbX6mtty1vMXlQ0o3gPZkJduoundBRUpg5zQjP8_-GLeZ6z4HKCVcZ_xYdnz6R7rhCA0iOj3itZ5ap6fQ1-XMBKFO3MCg9M1ZltvhSVdYCrImDUeSQniP7SuuWIqlInO1-kSyPJBV436cMPQqMzwnB7PH9MP2Qd0fheZHDdOWcyFfmL2t27l-SYpG_XQy3JU88exfF5kEiK9k2iztKS_qJ6nkkWMWQKF5lW8-8aTGCpDYkmL7_IIbsGmOr6oqBz53XvfRrWb2sDolzK9AsuF9ajG1AU2NY2Ht8gHy0P2Ne-ui2M-ASvc-O9jwVB3MAK7Pfj9-IfD80CLd1WAykjGYq03X_B6MbikeJgFjCOSGUftxJ3FA4tAaLdZIARlVgW7UZed_jxLNszwZzJfeSWfYHoOqpsrhZb2ZEbOi97T6M0KHk48oMzLXknk2BdETxsZSA9F4BApNneZeMBgih5UwIUW3YgUl5vt2kg4NY5Bya4Tj7jBbkANj-dzjji1pi_jVYIl8NUS7jA-PYkaUpbNokDWM4_14Vgf33aMVxKOIPCs5G2cSrHTqQ6Cb_INR0ILV95rmfnlDziGO7nekWSgzn36-ZZueNDHfL2MevBdSUSIt-tq0jwlc-3_n0IPrxHv0cQCukv9rl5x1lgAHhRtlwZ1hATBsOigyAt-sxAB30EbUr_TNJ8GTo4dsaS8y3TtR8Gie9kYfuH-x4WfJxlVizAHmfG8-FppsUC9F3GvUQEJrTVKu93FthvOCQkdmqTJKlnBvOzM2aaRrqrc-nmZxRx-SQeWBHgAXJc4g4EBcLuw5gY2faSsed1utwegltnJs_agQimVB7YtLmERIC-5xRiOivnEfBpmOsrPynUDXj-KtbawhuOlp_2iTsFP5rbArefYFEIKXckb2wXiOECALTk-Th4ivwfMRQeo7nyRt19R_Iwb81AKpgF8dMx7tjASEIHfhEAjMISPI1na9uQ7MRDRjD3IucOPZcc-U5nlmvpd3HJX10cLHTSVszJho1Br5VceDSBLmBrCm_wUfozzV8a-V6LmnxPx3rQEKuAoBidhC6-M35_Xw_HwtweDYjRl-LCibCii3yUYRJm8ODayJ18QFUAS3vN0fsN3jyOc3H2dYy2MjpIK-x1KxpakiyvsC-BQE2Izg-H-aL6iUxiwSEDQil0jeIb9Kz7AzeqwAnSlvY98xOYpzn_LB38PH19FhIeZXEuplcSm_k-ID9TQlcvXjhY7nPHftoI4UzopZ6CQLuX71NVsNMRTCyb2Mh5k1wI8C29hhVs07rCNYTBGPMS1TpZ3FvE4MiFU_VY6pv74Z_Ici_fGSyEPy4T4dreD2c4g2Jk2cddTXTiHxymIGgxo6Kcj_qufO_7ZfnGuTk7SIxUDeVJZ1gr8dt5E0FB1Pms2cMsoFLIxlNEJz0-qHIebkcL8LvsAEbIb2O_C0gCMHw7So1SREIJM7Cjqz93UFs-RDvDxSdU--GcUiA0b0sBh0gB1cw73GG8CU1JIVF3POisBsfZyexRdpxBw_Q0W0jT7tdDPCxhzyiLf3SPEmNBB_5-bVFngQlFoDoZrFlmj9ZL-0aJvaBL8z8dK492i3HDddQO5oQBv6QPBAvTxBX-n4D2v7dW_V7i; wouetonvnC3=HluO-gsOuaE7GoeC6mvPcMmboXmhfoI1DSIjhL-W9x4UpmP92PC_xTgQCxIsRgqMVezJrc2NLBD6k_cqgvze7q9UMGvjIe24Dy5Ff2xCF7RBNP-A1lyyAI92EyT6kT30Vz1jH-b6StNtu7EI4ZmOytikbOLBMy6ObPCJuyHQbk4Ohi-mHYT-hBltfx_pggi94UJE32oC5pRrh9xpBHrx0vrPw-afUmMI0_Og8hDIeOaKoA3GU-eKIL-CZacmXeIzVyahV2Dt9J3gIOiM49xRvKrNT-ywAXRht15kpMEDMzBaylbABMLEGUdnoFf2mdfDno6swnvQfiLxFVdcKlSaRnFgVMChSGff4_eMvdi8J81SfbLVC2ZgtyjYDDP5RBdlAUmytH75WcpAyeMQD42xjxgbQLQedKOcv182UwrzewBNTPZxPMqtCDXf-nCMcQjel7YHydeJLSMRGdL92PBo44vploak2rb_Bv0KWQ-na9Lu3mBHxQQmuv3FlJm3FAz-ermiM_OP3fnfqIHhbGQahSbEQQR1ZVDgrACXOug6ZLnXqGjYNr30CJTCpm-H-_Jq_v9s2QzKYsU6gtwUi7g6jnwrAHuSeAH1SRxGHGr4_DrxCS8rAxGlCtXH2ktmWl5kuZ6ED6dv9LMg2kHaA86gWcAW6RjGp0udk0r3DdE4vo1VjHx3zlDgfkhaFhAPZacVjTu4TkuAkfrPKkp6NaWH94MOFlzeS9Xse5HNkifqgA-OXsL1-Uh61CZnaaxREfnC4Q2Fxmdbv42KrXt163W9vMW7jfNYXfz54KdKyFTfghRlG8aJTjp9Njko11b4IFWiyAXQo7IVpEZtvZKDw2u0i7eDRD6qGTxCOrX-FsJqgZijcxDWLdMAoUGzPHRTsAmSrRAiDhJ1eWK1o9UcydpiQjysUVb3cWMriQERH3LkDkW0u1da-LVvqMUzRlLG4rTzlb2q5UPZs30ABprMFUw8V8c4AbW6BK5B51Xm8YvcFuqrFNxlmaiJKw_y2s3ymY30ra3Nnyi31PVxQpVoRAv-RoyIdYyVFDSYQhqY9Ua_1N-pXJ7DylxJGQq4xmovaiTE35uT68V45aIeCmM6PIwk-4axyhfx_KrirnVChfqxzfRevtJrj_0VAXmc2DIp94twxGnIE3MCO4OTnqgR6WTi74ngi3u5kKk71wlKZbPHODFXWF8oWaK9dYqCh3GZI_ndwcmq06v7t0uSQrlzT05Mgvy-j0vzRhWnJgdjMFXZrkoe6vy2tLqgLsWip5F5tOKy7Qztc4UhUcoyrAc7jPiy9rfXv1GeMyetLf2g-570gDzC-rMkSWrCvGVRVdK01QWDO05UzETS15vPisxesfxmScwXyO2oXcZM0Z9n7kWid3syhn2h9BBOl34gkdBr8C3ezQLZwxKFMIqmiHY-lSiYvCvrReM-odE61OBk8CRSglLLQdPkJT2qhg5UKNCfhFnUzpycU8mx0Itw6ywIXDwVTWv5nESlMtx1gkTSYQcm1cQcuz6KRQdcpM-CxaQZqW8GAfazkqV7tTBlFYolB8t6kDamQmpDV1_EYQs_f0fTQKkaiTEkijtb4BR8wOcSixVVhlPruojV5ALu3FZuSE4Enze8AMLvi3w46bmg085hdS8NGFxYZyC-4MZSkhc-GyyjnktyW1z6AOXSfesuTFsPyoLVWlWmX4zFbXJMcF9WUL5aNoWRpCkQ4s43MIlniuFDLmD2fZoWP3HNicew2_EIxmkRDchGIp8UUZP1ANpBLmmy1hpMMbUABRqfnJZUyjSAqDBKStJxpbB3r6rpbKEPg-E1baOb-CtrozygmK33z2LQJULybq1tkXpgwsMXKeMd62nQc1xvTckVv6JirugU6Zp4IMBaBig_SB37H64w-2FF4qLhOSmOQ9vBwoq9zHSCeyBBlivxAga0nQEeUIyPlns4TevxpLg30SMUAe1tAGs9CbJP7ZjAKFv4QkDXtGsur3w9Aju8J5wRhdPUP02pPWL4uIaWf7Vgf8VhGNvCEQsFaATrpbFOHN-Rvpbj3J83XG5uzUbPMrG2PVEFmkxsuz41kitOj3XNTgTzusUq3tYJa8ktgHy037K6cC9m7hFfzahSw0ZxjNCOnx4NQlNwzoiPNsTpgs0vthpSxWkQ8qobKzgs42gKvVafIk9QfPwqb3bCPzlWww6-Wb5vqFzeg83Vx6HW9mP-CvX3KEafGNocZWFKkD_laY9ypk4dK7AqbFGo6vWIRJafZ0cID1uUASVm38Lc94mlIiajUgPAxWldix-3kr8qWAEF6HDpk7EacWRTNTlDeoWrDG8PxT-7xks5x3wCfgVNEPten36Hjm-LdjpyMZTthLYZf-wN6x2nwO5qLsq2BmRL89CL8ukcMojOJLJF2wuHTG5x2rcje3wjyv0ss0cR6yeR96gB4x-2bI1rlkXggoeO2jVZlyE7Yll891jZzlQnuGGtuRTsy0KCAmfrlCT0GGUxVOd8hig1GAVD9cH7PNcrpcDu6hfQTUK2IIe6-w6alfElAdjJNwmWs8oearacHLCISxyClYLlgD2219S0p58Qfx81EeiCTtbhvHRS-vMd3DEZLXcGECAmITrmL386QeK2SOA_5HtyNyzWv3a7cRMt5UqRfq7DWnelnzpDFebHuoA3yffoG2Xg6KonX_XVNxCHhQ6k7fTLRXBjva6zhnUBprnzyQuZkJGrwJHwImd1vNyxamLqUxCi37nCk7YVJYLZev4tLfjF52l1v3-KwJpt4I5uIL_stqZue815CDq3_j5ImLbNLJedIJX5V_1NN3nCOp4pifjPSsttSkcA2axnDhreZqyUfhoK9ZKS8wCI3uh5wydneGYNO1jysyRV-yc7x0Ub0mCxrHTcr0MdY0T0297swR0-Mx5AH_oD7yAYwhJmWjVyvwMpyUFh1UtYAGv_7gELRYmyacyAkdONoND4po1Q1a0qgAzOaI4Ke10wUPG0qLiOGNbxFDGcJwI0p8twBGB-QH3pDJ_G_oi72L9qvFd90QVW_8ca7-tgLNx1zGyNEB2LwkaQd3dIhcZPbiXgcURhfJFKStpRToG84I6vhNSSEKemgEHlqXbTj3TddpRdAwSB8sJ9WkGffxomnqbwGH992krv4jRZ7H84CcAy04KuwdTKsBsoaID7UiTh-2KYEPK0WGIy3Qq4Chwod5pYwhFd1_08Vu9f5z80ejBP8qru8aMt9SySomQPoSJkOKVpT0PLv47nVk7gepzwzmrFF3slb74cqdtFpBWoT2J17UVR3FhDRzZGfUYrlTdQSAmsCeopIXHyMY0GmkP7RAUQZk0UqhzwNTA3XMIIHz1WJNgt-i_JMx8g1EQJ0EHZ14wRu8-NRB1igsg5xOxe7lU_zoWKsqqYFrtE4btqVXstGorll9z14kKhczHUql53kFwaiSqIj4Nymmi55-gWPAvMRXXPxkDshAL9b9LJUbo-W2l0rSDlrMB62gnCE0PLC0m2xiFyCcCpKhCAgRgs7mRh70bVsitiqRHtdw3B06otKhzuU--F3E09YwrRjMlGzjxKIgtxnZrVQfiTxUyGvxyxkKfNPciuuVWTcBcFU6B4hLyEvcCwlYLVsNn46GVcYEGYLkNZ_4es-Ug_01CIIoGnIhB1oyrYW7Pc5kNPwhOKSiIeatiEoMbgCUoZKDDCPvzJvYYVn9y3r_j-Te7q34UTtLbSsRnE4-V3w1Fgsr17p7FUDUFqvI10JAPeAuAC1_WbV_UDvTrDk1_XkHTMNyT8XmESRoOEkCXX56-1mouM2mxPHO0mfB26NTb5rJVcDIIs2rNSW5ty59jnhtzcJa1QxNQX3dAa7X1mgayRQUZPNWsTjokoQmREtNDhMIA--ttP8toJKr0N7-peAjES8a3QEQsJRzku2RdzXcxOMLkqZHgk68LqdEt3o9WBGBvVt2LMl_F0SLwbLWe7rGee80jCscoBmCNqcZ8pernlxYUrjh4ld; wouetonvnC4=rRBvundKloKqM0E_i4e1GYFdpEm35Ax-ENmiUh34TwR-kjKKgkdHBdVt4varhlusNLbIByC35wxUJhKbPfuvfzqoT7ESorlwL7LTnp05aLTPNB7V8tB4A-pBAn_WPU2PG07sWTczqhxVsZM3ORT17RpAcoTEp_0FZu1h6fa_14JwhboX65YKzbGtAuiSAd1EI6iNHAx1flA0NzZ8YX7UuMrDM8Y4A-Va6cain_SfwmKAQhUXx_MnjpF_swRlGqYIfRttNA-OFK4CCvHYNC4oXavrpjtE87l4P8bibwJZogMzho-d8uFI-DTi90LkojjwLOzKQs-42FBeMGe3c-BtEQ4G-bu_mcGKj2xhiYDcj9Bc9zYOccvFW1cblu6WWGzsNYZfHzu_f9xc12mlAME0o3ooluD9_vkC9CXJftPy1_bwzBZFWazPWtXdJThzoFvPR-ByQoGi0n5JwM7KBKqyWatfL38F5gZ9T0nz_x1i2BgK12loZRi3PHVDu-ME7BTGqxq1YocsJXUozBPKTxMxxNTObCdanRs1OTlSUmRH470gkfuXNdfyPPlNc19oCNlHh9sGP0a-NGb9n9613SvibyfTYJLI9p9wdnPDqHQHLCe6LatJ_76Jz2ovOPs36TgNnQeEPmcivCkzuOE4G_0wYnvfP_V-hQmpx1ERA0n8827kATw23PmGOGLHBv8mH1u_RwokJ_4ai2Rk1jQHr9IPrawNMRDkr2B2EgG0ksL0ya4Di9XshG8S3bh8Q4MhATYXCGkrC4vg8KD1-Pdb8wIXrWl5TfayxuIxVDo9v1O_icwwAE_RkfgMiXAqHjZ_RF20OzzuJUxp3Ac_veT5RLA0xEDOP5-X8xl8eL3wvET215PC280q6INHdXu3OOWhJL2552JlfbUeMcaMzXqpnPpxW_XrKHAtMEXuN8QEeeSXYwcj8167qto5DYsIzvRpmnve02itlcFxdX4OfA3a9FnSP9lqbscpPKHQlvXverVaIyA1ulWLA0W85QC0fJbSZlzPL-6Z34Jue-I1xesLJuae0DmyKuSJM2oMrv6FkQFgop57G3A5MiIWMBrB32rSb81L6-OUtMhsbhtZUQWZUbik4RTBdZfqchE4BTdM5xS9SrnBTKG_ec1KbMAdcPazMPw2n53IkaDUUmTu1VgM4wJ8fRb9VT0ZQNCCvDHgZOUAleOcLQuJjNyUObsEU5mrW7dt-Qhmv-WAIextfkFyAWW4ZJY0nMKwanbvN8X7zFDaVzRC-RAO4snuZcfb92Tbj5hkLi-ne7kHPUCTY-MaVBGU2AmWamWuNAvSmvbfMfj8aWWldHJK9c5CG0Sp3gDbEANGuoqay9aHsbc9-2m_s0dvKQ6uxcD6P_feWOdhd3-Bc5z5HPiQxujSspC0CdwjyPeZONqqPt1TsqAJRqS8-4Egg9a-hGitqGlXRi5uVKwLMaY_pzgUTYuW6dRK4LZcNq_EnhNaR8L-1WhcK0Wia_iZ0qXW1v6xZXuvD3XV-6kxs7bZMD-UTN3IRlieo_GQ-yXzDWSOOtQeZWz2QwCHwz7X153SQaaTtEnKNNXqlq4W1xVhyG0NfkvdNaBM3e6HRVSpQlVAThMk3OaOmDtkVF2b_ULvwQlCZo-uiWTx6ov0NM6ZocyIHZieS7PDMcNkzwn5hCvU0s34tYNRCsZjJbuOQuBP4xsdfNrrZ5j6eZFoBbyDHO1_oFOFE6zSEdB0KIRTCOcg-b0uDcN-gL4h5DKs9IQf-H0JbBkxibZSZCl5YmCDmH7Q60SbhWmlHOQNdVF7c8yEIkjuhIPzAWJspsmJ1SqHySlB5tO5kEn7ZK5ziwcTZjQeHfk_ZGZKpYKu7G0Zf6_brosC6M7WkSZrnLmI2sjYHzSoV3Uwg5PML_beLlCFuz-ZoBfL1AoLhjAdoyOt94nvYUZhyOCLd-0kGAAf8E7eLCOvBu5ByYUtXUiRnQRg6Wgfnyq-FxNR_pYrBFvXsbjOYiIotQeFPfBksVxedUFzRRAUQvnZMgJhzPkraXkRyGMa3hEW04SHQVUXKVENQw34ZwpKWZhpvxX4crLvxwxcazjJyx9SE_5XlYa7WssMa40HcXVrf2p0X85IfJnbxHKugmiFxvqocUUP0NQYNQH4_qpaAuy4ODnVAQkA36mHAPMOO88vwSll2nPo_Yna1Wm4EqHuvu8aYBKbFAtoXSCPBhqm67NLU5EZ35GTo7GTxej_IZchpfCan7ZaRU-Qxet7MAi32rllI3HAakcvzyrQ5MJ7uJFYBoksuQ0XiNOlf-fvzm1AbDvm7IDFA; _gid=GA1.2.628557347.1685497575; _ga_H39M2KDGZ1=GS1.1.1685497574.4.1.1685497585.0.0.0; _ga=GA1.1.398823980.1685078728"
+					},
+					{
+						"key": "origin",
+						"value": "https://wou.eton.vn"
+					},
+					{
+						"key": "referer",
+						"value": "https://wou.eton.vn/TaskReceive/ReceiveWithPrep"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Google Chrome\";v=\"113\", \"Chromium\";v=\"113\", \"Not-A.Brand\";v=\"24\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "empty"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "cors"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "same-origin"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "x-requested-with",
+						"value": "XMLHttpRequest"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "PackageNumber={{po_code}}&IsCheckInCode=false"
+				},
+				"url": {
+					"raw": "https://wou.eton.vn/PurchaseOrder/CheckPOStatusTaskReceive",
+					"protocol": "https",
+					"host": [
+						"wou",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"PurchaseOrder",
+						"CheckPOStatusTaskReceive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create SO",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json-patch+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ClientSoCode\": null,\r\n    \"SourceClientBranch\": null,\r\n    \"DestinationClientBranch\": null,\r\n    \"SODate\": \"2023-08-25T14:42:34.0925782+07:00\",\r\n    \"CustPhone\": \"0915701718\",\r\n    \"CustName\": \"Mr Bean\",\r\n    \"CustEmail\": null,\r\n    \"CustType\": 1,\r\n    \"ShippingServiceCode\": \"STD\",\r\n    \"ShippingAddressNo\": \"123, Phường Phúc Xá\",\r\n    \"ShippingDistrictCode\": \"002\",\r\n    \"ShippingWardCode\": \"00037\",\r\n    \"ShippingBuildingName\": null,\r\n    \"ShippingDeptNo\": null,\r\n    \"BillingAddressNo\": null,\r\n    \"BillingDistrictCode\": null,\r\n    \"BillingWardCode\": null,\r\n    \"BillingBuildingName\": null,\r\n    \"BillingDeptNo\": null,\r\n    \"FinalCOD\": null,\r\n    \"CurrencyCode\": \"VND\",\r\n    \"BizType\": \"B2C\",\r\n    \"ClientExpectedDeliveryDate\": null,\r\n    \"ListSODetail\": [\r\n        {\r\n            \"SKU\": \"8935049009214\",\r\n            \"Qty\": 10,\r\n            \"Price\": null,\r\n            \"Amount\": null,\r\n            \"ActualAmount\": null,\r\n            \"VATPercent\": null,\r\n            \"PromotionPercent\": null,\r\n            \"CODAmount\": null,\r\n            \"ExtraServiceCodes\": null\r\n        }\r\n    ],\r\n    \"RefCode\": null,\r\n    \"ClientPickup\": false,\r\n    \"IsGotDocument\": false,\r\n    \"NoPack\": false,\r\n    \"IsPreOrder\": false,\r\n    \"Note\": null,\r\n    \"PackingNote\": null,\r\n    \"IsLabelling\": false,\r\n    \"IsOnHold\": false,\r\n    \"WarehouseCode\": null,\r\n    \"ClientTpl\": null,\r\n    \"ClientAWBNo\": null,\r\n    \"ExtraServiceCodes\": null,\r\n    \"SOType\": 1,\r\n    \"IsRequiredSorr\": null,\r\n    \"IsUsingClientShippingLabel\": false,\r\n    \"IsUsingClientInvoice\": false,\r\n    \"TotalAmount\": 0,\r\n    \"PromotionAmount\": null,\r\n    \"ActualAmount\": 0,\r\n    \"TotalCODAmount\": null,\r\n    \"RemovalStrategyByExpiryDate\": null,\r\n    \"RemovalStrategyByReceivedDate\": null,\r\n    \"ShipByDate\": null\r\n}"
+				},
+				"url": {
+					"raw": "https://exu.eton.vn/api/v0.2/saleorders/single",
+					"protocol": "https",
+					"host": [
+						"exu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v0.2",
+						"saleorders",
+						"single"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://ccu.eton.vn/signin-oidc",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authority",
+						"value": "ccu.eton.vn"
+					},
+					{
+						"key": "accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
+					},
+					{
+						"key": "accept-language",
+						"value": "en-US,en;q=0.9"
+					},
+					{
+						"key": "cache-control",
+						"value": "max-age=0"
+					},
+					{
+						"key": "content-type",
+						"value": "application/x-www-form-urlencoded"
+					},
+					{
+						"key": "cookie",
+						"value": ".AspNetCore.OpenIdConnect.Nonce.CfDJ8LQH0_uu2_9IkkR3qhBfrHsqkJYF8WSz1cZR0sBZyDIv5bsu_fkW1T5is5d5bLYxj2ADcxI1J294f9Zmm31Mf9cdicFvOddmfABBe_Ms2ECnV_ENYRAb--IIwOF3houbDoTQJqvfeCLah9ajwBIDAj6QLfigRk648-YCEuscmlIOfSOI9mPEUGEdIgT-3cz4KImwpAyxEdiuMY-fUeLJGDB5o_RGgQAkNoHLcEipoyZszULOL3Pjq7uXOdjbQXrwXlXgLxdeZqQHl-Krlncx8iI=N; .AspNetCore.Correlation.oidc.PgTpxzoZ_rX_LUusGKPOL-t3UK4yJgHkQlVbExV8I4I=N; .AspNetCore.OpenIdConnect.Nonce.CfDJ8LQH0_uu2_9IkkR3qhBfrHujFwoxTf3K6t_kJ3pEJKetwmQx5edRHzXaZV_pXyC0y4gApD8G8uWO0Xgpj3nXw-QPLE50ImsQbb1ViDfQUP9mQaLsFo5jw5utXW80S_EGQObDYO_K2WtvKQczqU0I1wClQxA0L_xpCAfZOTUNnx_MjaCu_PQx7u7WPaH3d8yJKdgaoQc7-CsVbxFHGrglsmE3NDKWdyT6V94GlR0gfFKyFTCCct1Hx9ffPLnnUHojVkgY_qyOzEj6_yKDVyXcrew=N; .AspNetCore.Correlation.oidc.L-xuxnmVVH2FTSttQDGNWZ60BmR0NqM-q1pp-CNmIFQ=N; .AspNetCore.Culture=c%3Dvi%7Cuic%3Dvi; _gid=GA1.2.2020650891.1692087013; _ga_H39M2KDGZ1=GS1.1.1692176045.76.1.1692177071.0.0.0; _ga=GA1.2.652220395.1689219091"
+					},
+					{
+						"key": "origin",
+						"value": "https://idu.eton.vn"
+					},
+					{
+						"key": "referer",
+						"value": "https://idu.eton.vn/"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\"Not/A)Brand\";v=\"99\", \"Google Chrome\";v=\"115\", \"Chromium\";v=\"115\""
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "document"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "navigate"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "same-site"
+					},
+					{
+						"key": "upgrade-insecure-requests",
+						"value": "1"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "sec-fetch-user",
+						"value": "?1"
+					},
+					{
+						"key": "Referer",
+						"value": "https://idu.eton.vn/connect/authorize?client_id=etonclientcentral&redirect_uri=https%3A%2F%2Fccu.eton.vn%2Fsignin-oidc&response_type=code%20id_token&scope=openid%20profile%20etoninfo%20clientcentralservice%20etonadminservice%20idmgr%20etonopsservice%20offline_access&response_mode=form_post&nonce=638277757057507281.Zjk4M2I5YzMtMTI2NC00ZGI5LWFlMDgtN2FmMWI3Yjk5YTM1ZmJkMGUwNDgtMWJhMC00Zjg4LWE5MzctYWEzNDk0NzYwZjZj&state=CfDJ8LQH0_uu2_9IkkR3qhBfrHvqZJHxjz8qajsraD3E67D1jpb8JJOtQLu7kdG9vqYBBvFwxX9CVdYbGFDUrzRM_-vQo9u3fchLqsslfZjJM44eOeYChJSoJ6wb_IiP2twCzCmukZNvAJgWpFyfEDEm8RwbY2bcHnGmjs3-_ukrExLSWNbdolgjTmYZbdnnd3mthtMh-OcF6m4fazwA5neJijpiJICMFCrwDCvwPWjqdQLJVzA4E___P70VxfXdlNz2NDASsPSQbhA6LdbvSvoHG1wIF5eyQcTdRmnGSX0e30AzjSpkcjrCxTR-zaOvwC_J8g&x-client-SKU=ID_NET&x-client-ver=2.1.4.0"
+					},
+					{
+						"key": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+					},
+					{
+						"key": "Origin",
+						"value": "https://ccu.eton.vn"
+					},
+					{
+						"key": "content-length",
+						"value": "0"
+					},
+					{
+						"key": "x-requested-with",
+						"value": "XMLHttpRequest"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "f7a8549bb85830f6bc09ab16a2f2092b",
+							"type": "text"
+						},
+						{
+							"key": "id_token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImIxUko2NVk4NDNBajh3Zm1wSV90eDk1MmNCMCIsImtpZCI6ImIxUko2NVk4NDNBajh3Zm1wSV90eDk1MmNCMCJ9.eyJpc3MiOiJodHRwczovL2lkdS5ldG9uLnZuIiwiYXVkIjoiZXRvbmNsaWVudGNlbnRyYWwiLCJleHAiOjE2OTIxNzkyMTUsIm5iZiI6MTY5MjE3ODkxNSwibm9uY2UiOiI2MzgyNzc3NTcwNTc1MDcyODEuWmprNE0ySTVZek10TVRJMk5DMDBaR0k1TFdGbE1EZ3ROMkZtTVdJM1lqazVZVE0xWm1Ka01HVXdORGd0TVdKaE1DMDBaamc0TFdFNU16Y3RZV0V6TkRrME56WXdaalpqIiwiaWF0IjoxNjkyMTc4OTE1LCJjX2hhc2giOiJ2c0RZSWNXNTVzZklNQlhNVDB6dTZRIiwic2lkIjoiZDA3YjA5OTU2Y2E5YzdlMjE2M2QwNTA3MDQxMzEyMzYiLCJzdWIiOiIzYjFkMGJjOS0wYmFmLTRmNWEtYmEwYS04NTA3ZGFkOWRkMzEiLCJhdXRoX3RpbWUiOjE2OTIxNzg5MTUsImlkcCI6Imlkc3J2IiwiYW1yIjpbInBhc3N3b3JkIl19.dFtFhOvaIRJstOO2TZE321B8LcwZv9vLiPgHT1Htf-bJgW15Dy10YMZtF3RJKJBrLIdC25ZGOwpZlTFjvJ1ghEWP-OV_VVwqbhlmvmhmRiG0QdKcXRJnd_XAdMP89F3R1qzTxUcQB40QXtmv6CLnsqjiDC5oW4kz8crqx_gpLu65kLEERn8bsMM4YSmMzbOyiHd0tt9Ir9ZgGEteNpirYqVNcua43FEM56dnvupFwoedKT9ELHKePmPoKyHn_YmiH8raXeenB2CujqWhQ7w0PgOqLePzxm0bzq_CP7Fk2eeo6YkqlHrO3tdOSlQS3AOLQ8fTN3h5H9Ss13nJf_VZQw",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid profile etoninfo clientcentralservice etonadminservice idmgr etonopsservice offline_access",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "CfDJ8LQH0_uu2_9IkkR3qhBfrHvqZJHxjz8qajsraD3E67D1jpb8JJOtQLu7kdG9vqYBBvFwxX9CVdYbGFDUrzRM_-vQo9u3fchLqsslfZjJM44eOeYChJSoJ6wb_IiP2twCzCmukZNvAJgWpFyfEDEm8RwbY2bcHnGmjs3-_ukrExLSWNbdolgjTmYZbdnnd3mthtMh-OcF6m4fazwA5neJijpiJICMFCrwDCvwPWjqdQLJVzA4E___P70VxfXdlNz2NDASsPSQbhA6LdbvSvoHG1wIF5eyQcTdRmnGSX0e30AzjSpkcjrCxTR-zaOvwC_J8g",
+							"type": "text"
+						},
+						{
+							"key": "session_state",
+							"value": "PNAuwjcs9EA3ha7gs97ZwLAIa5N-7TZTIpYIbsVepy8.74d8523f5d5cadaea663216fccdcd128",
+							"type": "text"
+						},
+						{
+							"key": "idsrv.xsrf",
+							"value": "QsiHfhIKul6p7h5fxF2ilrR7mK01U97Nyo5K7EbwSXsSZpv5ZKgzIEwRkKghIuz9iAo-VKmSkHTryGjPRT_ZSkyH9hZTkSy-YWw1M5g1lrg",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "aad.admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						},
+						{
+							"key": "rememberMe",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://ccu.eton.vn/signin-oidc",
+					"protocol": "https",
+					"host": [
+						"ccu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"signin-oidc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://exu.eton.vn/api/v0.2/saleorders/SO999NTFEBXFP",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://exu.eton.vn/api/v0.2/saleorders/SO999NTFEBXFP",
+					"protocol": "https",
+					"host": [
+						"exu",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v0.2",
+						"saleorders",
+						"SO999NTFEBXFP"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

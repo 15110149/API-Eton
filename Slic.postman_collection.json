@@ -1,0 +1,344 @@
+{
+	"info": {
+		"_postman_id": "fe78dddd-ead7-4292-b89e-3f7c9d76f0fe",
+		"name": "Slic",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20688839"
+	},
+	"item": [
+		{
+			"name": "Search an address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"//pm.environment.set(\"access_token\", jsonData.access_token);\r",
+							"pm.test(\"Verify geoPointAddress response correct lat/long\", function () {\r",
+							"    pm.expect(jsonData.data.geoPointAddress.lat != null);\r",
+							"    console.log(jsonData.data.geoPointAddress.lat );\r",
+							"    pm.expect(jsonData.data.geoPointAddress.long != null);\r",
+							"     console.log(jsonData.data.geoPointAddress.long);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"full_address\": {{full_address_slic}}\r\n   // \"full_address\": \"@@\"\r\n}"
+				},
+				"url": {
+					"raw": "https://stg-slic.eton.vn/api/v1/address/search?_format=json&exact=true",
+					"protocol": "https",
+					"host": [
+						"stg-slic",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v1",
+						"address",
+						"search"
+					],
+					"query": [
+						{
+							"key": "_format",
+							"value": "json"
+						},
+						{
+							"key": "exact",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get SLIC CODE by address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.success).to.exist;",
+							"    pm.expect(responseData.message).to.exist;",
+							"    pm.expect(responseData.code).to.exist;",
+							"    pm.expect(responseData.data).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate geoPointAddress object\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.data).to.be.an('array').and.to.not.be.empty;",
+							"",
+							"    responseData.data.forEach(function (item) {",
+							"        pm.expect(item.geoPointAddress).to.be.an('object');",
+							"        pm.expect(item.geoPointAddress).to.have.property('lat').that.is.a('string');",
+							"        pm.expect(item.geoPointAddress).to.have.property('long').that.is.a('string');",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate slicGeoPoint object\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.slicGeoPoint).to.exist.and.to.be.an('object');",
+							"  pm.expect(responseData.slicGeoPoint.lat).to.exist.and.to.be.a('string');",
+							"  pm.expect(responseData.slicGeoPoint.long).to.exist.and.to.be.a('string');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://stg-slic.eton.vn/api/v1/open-search-address?address=113%20%C4%91inh%20ti%C3%AAn%20ho%C3%A0ng%20h%E1%BB%93%20ch%C3%AD%20minh",
+					"protocol": "https",
+					"host": [
+						"stg-slic",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v1",
+						"open-search-address"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "113%20%C4%91inh%20ti%C3%AAn%20ho%C3%A0ng%20h%E1%BB%93%20ch%C3%AD%20minh"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Province List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"slicProvice is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.data).to.be.an('array');",
+							"  ",
+							"  responseData.data.forEach(function (item) {",
+							"    pm.expect(item.slicProvice).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://stg-slic.eton.vn/api/v1/slic/province?_format=json",
+					"protocol": "https",
+					"host": [
+						"stg-slic",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v1",
+						"slic",
+						"province"
+					],
+					"query": [
+						{
+							"key": "_format",
+							"value": "json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get District List by Province's SLIC code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the 'message' field is an empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.message).to.be.an('string');",
+							"    pm.expect(responseData.message).to.have.lengthOf(0);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the code field is 0\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.code).to.equal(0);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the 'success' field is true\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.success).to.be.true;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the 'data' field is an empty array\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.data).to.be.an('array').that.is.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://stg-slic.eton.vn/api/v1/slic-name/{{slicCodeProvince}}/district?_format=json",
+					"protocol": "https",
+					"host": [
+						"stg-slic",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v1",
+						"slic-name",
+						"{{slicCodeProvince}}",
+						"district"
+					],
+					"query": [
+						{
+							"key": "_format",
+							"value": "json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ward List by District's SLIC code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the 'message' field\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.message).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate the 'code' field\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.code).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Validate success field\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.success).to.exist.and.to.be.true;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the 'data' array is present in the response and is empty\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.data).to.exist.and.to.be.an('array').that.is.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://stg-slic.eton.vn/api/v1/slic-name/{{slicCodeDistrict}}/ward?_format=json",
+					"protocol": "https",
+					"host": [
+						"stg-slic",
+						"eton",
+						"vn"
+					],
+					"path": [
+						"api",
+						"v1",
+						"slic-name",
+						"{{slicCodeDistrict}}",
+						"ward"
+					],
+					"query": [
+						{
+							"key": "_format",
+							"value": "json"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
